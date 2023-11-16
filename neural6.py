@@ -1,6 +1,9 @@
 import numpy as np
 from PIL import Image
 import streamlit as st
+import joblib
+import os
+
 # Sigmoid activation function
 def sigmoid(x):
     return 1 / (1 + np.exp(-x))
@@ -83,8 +86,14 @@ def process_image(img_path, flatten=True):
 
 
 if __name__ == "__main__":
-    # Create a neural network with increased input nodes, hidden nodes, and a higher number of output nodes for handling more classes
-    neural_network = NeuralNetwork(3072, 150, 2, hidden_layers=3)  # Updated output_nodes to 4
+    # Check if a pre-trained model exists
+    model_path = "neural_network_model.joblib"
+    if os.path.exists(model_path):
+        # Load the pre-trained model
+        neural_network = joblib.load(model_path)
+    else:
+        # Create a neural network with increased input nodes, hidden nodes, and a higher number of output nodes for handling more classes
+        neural_network = NeuralNetwork(3072, 150, 2, hidden_layers=3)  # Updated output_nodes to 4
 
     # Define training data and add more image samples
     cat_paths = ['cat1.jpg', 'cat2.jpg', 'cat3.jpg', 'cat4.jpg', 'cat5.jpg', 'cat6.jpg', 'cat7.jpg', 'cat8.jpg', 'cat9.jpg', 'cat10.jpg']
@@ -106,7 +115,8 @@ if __name__ == "__main__":
 
         # Train the neural network
         neural_network.train(inputs, target_outputs, epochs=2000, learning_rate=0.02)
-
+        # Save the trained model
+        joblib.dump(neural_network, model_path)
         # Test the neural network with more images and evaluate its performance
         test_image_paths = ['dog14.jpg']
         test_inputs = [process_image(test_image_path) for test_image_path in test_image_paths]
