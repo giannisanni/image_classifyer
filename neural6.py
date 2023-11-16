@@ -157,6 +157,9 @@ def main():
 
             # Display prediction result
             st.write(f"Prediction Result: {classify_image(prediction[0])}")
+             # Show test image predictions
+            st.write("Test Image Predictions:")
+            st.write(prediction)
 
 if __name__ == "__main__":
     main()
